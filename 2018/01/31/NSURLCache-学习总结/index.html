@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-one.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon@2x.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon@1x.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo-one.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="iOS,Objective-C,Swift,Xcode,CocoaPods">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="OverviewNSURLCache 通过将 NSURLRequest 对象映射到 NSCachedURLResponse对象来实现对URL请求响应的缓存。 它提供了内存和磁盘缓存方式，同时允许设置内存和磁盘部分的大小，还可以控制缓存数据持久存储的路径。 NSURLCache 是线程安全的。 NSURLConnection、NSURLSession和UIWebView默认都会使用NSURLCach">
+<meta name="keywords" content="iOS,Objective-C,Swift,Xcode,CocoaPods">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NSURLCache 学习总结">
+<meta property="og:url" content="http://yoursite.com/2018/01/31/NSURLCache-学习总结/index.html">
+<meta property="og:site_name" content="Jaymin&#39;s blog">
+<meta property="og:description" content="OverviewNSURLCache 通过将 NSURLRequest 对象映射到 NSCachedURLResponse对象来实现对URL请求响应的缓存。 它提供了内存和磁盘缓存方式，同时允许设置内存和磁盘部分的大小，还可以控制缓存数据持久存储的路径。 NSURLCache 是线程安全的。 NSURLConnection、NSURLSession和UIWebView默认都会使用NSURLCach">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://i.loli.net/2019/06/20/5d0a76e9b067274069.png">
+<meta property="og:image" content="https://i.loli.net/2019/06/20/5d0a76ea9179d83710.png">
+<meta property="og:image" content="https://i.loli.net/2019/06/20/5d0a76ed6c42469203.png">
+<meta property="og:image" content="https://i.loli.net/2019/06/20/5d0a76f11dfce97010.png">
+<meta property="og:image" content="https://i.loli.net/2019/06/20/5d0a76eb7cc9057710.png">
+<meta property="og:updated_time" content="2019-06-21T18:05:09.531Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="NSURLCache 学习总结">
+<meta name="twitter:description" content="OverviewNSURLCache 通过将 NSURLRequest 对象映射到 NSCachedURLResponse对象来实现对URL请求响应的缓存。 它提供了内存和磁盘缓存方式，同时允许设置内存和磁盘部分的大小，还可以控制缓存数据持久存储的路径。 NSURLCache 是线程安全的。 NSURLConnection、NSURLSession和UIWebView默认都会使用NSURLCach">
+<meta name="twitter:image" content="https://i.loli.net/2019/06/20/5d0a76e9b067274069.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/01/31/NSURLCache-学习总结/">
+
+
+
+
+
+  <title>NSURLCache 学习总结 | Jaymin's blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Jaymin's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于我
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/31/NSURLCache-学习总结/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jaymin">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jaymin's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">NSURLCache 学习总结</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-31T20:14:04+08:00">
+                2018-01-31
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h2><p>NSURLCache 通过将 NSURLRequest 对象映射到 NSCachedURLResponse对象来实现对URL请求响应的缓存。</p>
+<p>它提供了内存和磁盘缓存方式，同时允许设置内存和磁盘部分的大小，还可以控制缓存数据持久存储的路径。</p>
+<p>NSURLCache 是线程安全的。</p>
+<p>NSURLConnection、NSURLSession和UIWebView默认都会使用NSURLCache，所有经过他们请求的数据都将被NSURLCache处理。</p>
+<a id="more"></a>
+
+<h2 id="缓存策略-NSURLRequestCachePolicy"><a href="#缓存策略-NSURLRequestCachePolicy" class="headerlink" title="缓存策略 NSURLRequestCachePolicy"></a>缓存策略 NSURLRequestCachePolicy</h2><p><strong>NSURLRequestUseProtocolCachePolicy</strong></p>
+<p>默认缓存策略，对于特定URL使用网络协议中实现的缓存策略。</p>
+<p>该策略下，当客户端发起一个请求时首先会检查本地是否包含缓存，如果有缓存则检查缓存是否过期（根据缓存的响应头中的 “Cache-Control:max-age” 或者 Expires判断），如果没有过期则直接使用缓存，如果过期则会发出请求（请求头中包含 “If-Modified-Since” 或者 “If-None-Match”），此时服务器端对比资源 “Last-Modified” 或者 “Etags”（二者都存在的情况下下如果有一个不同则认为缓存已过期），如果不同则返回新数据，否则返回304 Not Modified继续使用缓存数据。</p>
+<p>该策略下，通常对于 NSURLSession 不做任何设置，只要服务器端响应头部加上 Cache-Control:max-age:xxx 就可以使用缓存了。</p>
+<p><strong>NSURLRequestReloadIgnoringLocalCacheData</strong></p>
+<p>忽略缓存，直接请求原始数据。</p>
+<p><strong>NSURLRequestReturnCacheDataElseLoad</strong></p>
+<p>无论缓存是否过期，有缓存则使用缓存数据，否则请求原始数据。</p>
+<p><strong>NSURLRequestReturnCacheDataDontLoad</strong></p>
+<p>无论缓存是否过期，有缓存则使用缓存数据，否则视为失败，不会请求原始数据。</p>
+<h2 id="使用-NSURLSessionDataDelegate-来更改缓存策略"><a href="#使用-NSURLSessionDataDelegate-来更改缓存策略" class="headerlink" title="使用 NSURLSessionDataDelegate 来更改缓存策略"></a>使用 NSURLSessionDataDelegate 来更改缓存策略</h2><p>场景一：服务端没有在响应头中配置 “Cache-Control”，且当前客户端使用的策略是 “NSURLRequestUseProtocolCachePolicy” 时，可以通过NSURLSessionDataDelegate 修改响应头信息，来启用缓存，代码如下：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)URLSession:(<span class="built_in">NSURLSession</span> *)session</span><br><span class="line">          dataTask:(<span class="built_in">NSURLSessionDataTask</span> *)dataTask</span><br><span class="line"> willCacheResponse:(<span class="built_in">NSCachedURLResponse</span> *)proposedResponse</span><br><span class="line"> completionHandler:(<span class="keyword">void</span> (^)(<span class="built_in">NSCachedURLResponse</span> * _Nullable))completionHandler</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">NSHTTPURLResponse</span> *response = (<span class="built_in">NSHTTPURLResponse</span> *)proposedResponse.response;</span><br><span class="line">    <span class="built_in">NSDictionary</span> *allHeaders = [response allHeaderFields];</span><br><span class="line">    <span class="keyword">if</span> (!allHeaders[<span class="string">@"Cache-Control"</span>]) &#123;</span><br><span class="line">        <span class="built_in">NSMutableDictionary</span> *newHeaders = [<span class="built_in">NSMutableDictionary</span> dictionaryWithDictionary:allHeaders];</span><br><span class="line">        newHeaders[<span class="string">@"Cache-Control"</span>] = <span class="string">@"max-age=60"</span>;</span><br><span class="line">        <span class="built_in">NSHTTPURLResponse</span> *newResponse = [[<span class="built_in">NSHTTPURLResponse</span> alloc] initWithURL:response.URL statusCode:response.statusCode HTTPVersion:<span class="string">@"HTTP/1.1"</span> headerFields:newHeaders];</span><br><span class="line">        <span class="built_in">NSCachedURLResponse</span> *newCachedURLResponse = [[<span class="built_in">NSCachedURLResponse</span> alloc] initWithResponse:newResponse data:proposedResponse.data];</span><br><span class="line">        completionHandler(newCachedURLResponse);</span><br><span class="line">    &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">        completionHandler(proposedResponse);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>场景二：针对某些特殊的请求，可以设置只进行内存缓存，具体代码如下：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)URLSession:(<span class="built_in">NSURLSession</span> *)session</span><br><span class="line">          dataTask:(<span class="built_in">NSURLSessionDataTask</span> *)dataTask</span><br><span class="line"> willCacheResponse:(<span class="built_in">NSCachedURLResponse</span> *)proposedResponse</span><br><span class="line"> completionHandler:(<span class="keyword">void</span> (^)(<span class="built_in">NSCachedURLResponse</span> * _Nullable))completionHandler</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 只进行内存缓存</span></span><br><span class="line">    <span class="built_in">NSCachedURLResponse</span> *newCacheResponse = [[<span class="built_in">NSCachedURLResponse</span> alloc] initWithResponse:proposedResponse.response data:proposedResponse.data userInfo:proposedResponse.userInfo storagePolicy:<span class="built_in">NSURLCacheStorageAllowedInMemoryOnly</span>];</span><br><span class="line">    completionHandler(newCacheResponse);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="NSURLCache能缓存POST请求吗？"><a href="#NSURLCache能缓存POST请求吗？" class="headerlink" title="NSURLCache能缓存POST请求吗？"></a>NSURLCache能缓存POST请求吗？</h2><p>网上很多文章在讲到NSURLCache时都说“NSURLCache 无法缓存POST请求的响应”，但我实际测试发现是可以的，具体可以查看<a href="http://www.baidu" target="_blank" rel="noopener">demo</a>。大致代码如下：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment">// 创建配置</span></span><br><span class="line"><span class="built_in">NSURLSessionConfiguration</span> *config = [<span class="built_in">NSURLSessionConfiguration</span> defaultSessionConfiguration];</span><br><span class="line">    </span><br><span class="line"> <span class="comment">// 创建session</span></span><br><span class="line"> <span class="built_in">NSURLSession</span> *session = [<span class="built_in">NSURLSession</span> sessionWithConfiguration:config delegate:<span class="keyword">self</span> delegateQueue:[<span class="built_in">NSOperationQueue</span> mainQueue]];</span><br><span class="line">    </span><br><span class="line"> <span class="comment">// 创建POST请求</span></span><br><span class="line"> <span class="built_in">NSURL</span> *url = [<span class="built_in">NSURL</span> URLWithString:<span class="string">@"http://api.juheapi.com/japi/toh"</span>];</span><br><span class="line"> <span class="built_in">NSMutableURLRequest</span> *request = [<span class="built_in">NSMutableURLRequest</span> requestWithURL:url];</span><br><span class="line"> request.HTTPMethod = <span class="string">@"POST"</span>;</span><br><span class="line"> <span class="built_in">NSString</span> *param = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"key=%@&amp;v=1.0&amp;month=%@&amp;day=%@"</span>,</span><br><span class="line">                       kAPPKey, <span class="keyword">self</span>.monthTextField.text, <span class="keyword">self</span>.dayTextField.text];</span><br><span class="line"> request.HTTPBody = [param dataUsingEncoding:<span class="built_in">NSUTF8StringEncoding</span>];</span><br><span class="line">    </span><br><span class="line"> <span class="comment">// 创建任务</span></span><br><span class="line"> <span class="built_in">NSURLSessionDataTask</span> *task = [session dataTaskWithRequest:request];</span><br><span class="line"> <span class="comment">// 发送</span></span><br><span class="line"> [task resume];</span><br></pre></td></tr></table></figure>
+
+<p>如果请求成功，会在沙盒的<strong>Library/Caches</strong>目录下发现一个以BundleID命名的文件夹，这个文件夹里存放的就是NSURLCache缓存数据的数据库，也就是磁盘缓存的地址：</p>
+<p><img src="https://i.loli.net/2019/06/20/5d0a76e9b067274069.png" alt="-w600"></p>
+<p>打开Cache.db，里面有如下几张表格：</p>
+<p><img src="https://i.loli.net/2019/06/20/5d0a76ea9179d83710.png" alt="-w300"></p>
+<p>其中<strong>cfurl_cahce_response</strong>存储着response相关信息，如下图可以看到刚才发出的POST请求的URL：</p>
+<p><img src="https://i.loli.net/2019/06/20/5d0a76ed6c42469203.png" alt></p>
+<p>而<strong>cfurl_cache_blob_data</strong>存储着response的响应体信息的二进制：</p>
+<p><img src="https://i.loli.net/2019/06/20/5d0a76f11dfce97010.png" alt></p>
+<p>通过上面的缓存可以看出，<strong>NSURLCache其实是可以缓存POST请求的</strong>。当然也可以在请求一次后，断网再请求如果能够获取响应，也可以证明。</p>
+<h2 id="获取NSURLCache的POST请求缓存"><a href="#获取NSURLCache的POST请求缓存" class="headerlink" title="获取NSURLCache的POST请求缓存"></a>获取NSURLCache的POST请求缓存</h2><p>既然已经知道NSURLCache可以缓存POST请求了，下一步就试试能否获取，代码如下：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="built_in">NSMutableURLRequest</span> *request = [<span class="built_in">NSMutableURLRequest</span> requestWithURL:[<span class="built_in">NSURL</span> URLWithString:<span class="string">@"http://api.juheapi.com/japi/toh"</span>]];</span><br><span class="line">request.HTTPMethod = <span class="string">@"POST"</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">NSString</span> *param = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"key=%@&amp;v=1.0&amp;month=%@&amp;day=%@"</span>, kAPPKey, <span class="keyword">self</span>.monthTextField.text, <span class="keyword">self</span>.dayTextField.text];</span><br><span class="line">request.HTTPBody = [param dataUsingEncoding:<span class="built_in">NSUTF8StringEncoding</span>];</span><br><span class="line">    </span><br><span class="line"><span class="built_in">NSCachedURLResponse</span> *cachedResponse = [cache cachedResponseForRequest:request];</span><br><span class="line">    </span><br><span class="line"><span class="keyword">if</span> (cachedResponse) &#123;</span><br><span class="line">    <span class="built_in">NSString</span> *responseString = [[<span class="built_in">NSString</span> alloc] initWithData:cachedResponse.data encoding:<span class="built_in">NSUTF8StringEncoding</span>];</span><br><span class="line">    [<span class="keyword">self</span> showTitile:<span class="string">@"POST缓存"</span> string:responseString];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>结果发现居然获取不到缓存，仔细检查代码确定跟发起请求时的参数完全一致，难道是cachedResponseForRequest方法有问题吗？于是又用GET请求了一次，并使用cachedResponseForRequest获取缓存，这次成功获取到了，代码如下：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSURLCache</span> *cache = [<span class="built_in">NSURLCache</span> sharedURLCache];</span><br><span class="line"></span><br><span class="line"><span class="built_in">NSURL</span> *url = [<span class="built_in">NSURL</span> URLWithString:[<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"http://api.juheapi.com/japi/toh?key=%@&amp;v=1.0&amp;month=%@&amp;day=%@"</span>,kAPPKey, <span class="keyword">self</span>.monthTextField.text, <span class="keyword">self</span>.dayTextField.text]];</span><br><span class="line"></span><br><span class="line"><span class="built_in">NSMutableURLRequest</span> *request = [<span class="built_in">NSMutableURLRequest</span> requestWithURL:url];</span><br><span class="line"></span><br><span class="line"><span class="built_in">NSCachedURLResponse</span> *cachedResponse = [cache cachedResponseForRequest:request];</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (cachedResponse) &#123;</span><br><span class="line">    <span class="built_in">NSString</span> *responseString = [[<span class="built_in">NSString</span> alloc] initWithData:cachedResponse.data encoding:<span class="built_in">NSUTF8StringEncoding</span>];</span><br><span class="line">    [<span class="keyword">self</span> showTitile:<span class="string">@"GET缓存"</span> string:responseString];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这又是为什么呢？同样的方法，GET能取到而POST却不可以。于是换了个参数，再次请求，发现结果依旧是GET请求的缓存能获取，而POST不可以。</p>
+<p>抱着疑惑打开了上文提到的cache.db，也就是NSURLCache的磁盘缓存，打开<strong>cfurl_cache_response</strong> ：</p>
+<p><img src="https://i.loli.net/2019/06/20/5d0a76eb7cc9057710.png" alt></p>
+<p>通过request_key，我们知道第一条是POST请求，而后面两条是GET请求，但是我明明是分别请求了两次GET请求和两次POST请求，还有一条POST请求的缓存呢？</p>
+<p>回想一下POST请求和GET请求的不同，主要体现在POST请求参数是放在请求体中，而GET请求参数是放在URL中的，而上面的表格并没有任何请求体相关信息，只有一个request_key（就是请求的URL），对此我提出一个猜测：</p>
+<p><strong>cachedResponseForRequest: 方法是根据request中的URL来获取缓存的（request.url.absoluteString），而不包含请求体部分。</strong></p>
+<p>为了验证这个猜测，我们把上面获取POST请求缓存的代码进行修改，如下：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="built_in">NSMutableURLRequest</span> *request = [<span class="built_in">NSMutableURLRequest</span> requestWithURL:[<span class="built_in">NSURL</span> URLWithString:<span class="string">@"http://api.juheapi.com/japi/toh"</span>]];</span><br><span class="line">request.HTTPMethod = <span class="string">@"POST"</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// NSString *param = [NSString stringWithFormat:@"key=%@&amp;v=1.0&amp;month=%@&amp;day=%@", kAPPKey, self.monthTextField.text, self.dayTextField.text];</span></span><br><span class="line"><span class="comment">// request.HTTPBody = [param dataUsingEncoding:NSUTF8StringEncoding];</span></span><br><span class="line">    </span><br><span class="line"><span class="built_in">NSCachedURLResponse</span> *cachedResponse = [cache cachedResponseForRequest:request];</span><br><span class="line">    </span><br><span class="line"><span class="keyword">if</span> (cachedResponse) &#123;</span><br><span class="line">    <span class="built_in">NSString</span> *responseString = [[<span class="built_in">NSString</span> alloc] initWithData:cachedResponse.data encoding:<span class="built_in">NSUTF8StringEncoding</span>];</span><br><span class="line">    [<span class="keyword">self</span> showTitile:<span class="string">@"POST缓存"</span> string:responseString];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>成功获取到了POST请求的缓存，由此得出结论：</p>
+<p><strong>1.NSURLCache 可以缓存POST请求的响应<br>2.NSURLCache 是根据请求的URL进行缓存的，与请求体无关</strong></p>
+<p>这样的结论也意味着，进行多次POST请求且仅仅是参数不同，记录只是最后一条缓存，之前的缓存都会被覆盖。如果想要缓存每一次的POST请求，就要自行实现缓存策略，而不是使用NSURLCache。</p>
+<h2 id="如何关闭-NSURLCache-缓存"><a href="#如何关闭-NSURLCache-缓存" class="headerlink" title="如何关闭 NSURLCache 缓存"></a>如何关闭 NSURLCache 缓存</h2><p>既然 NSURLCache 并没有想象中那么美好，那就试试让它不要自动去缓存，以下提供两种方法关闭 NSURLCache 缓存。</p>
+<p>第一种是将 NSURLCache 缓存大小设置为0，代码如下：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSURLCache</span> *cache = [[<span class="built_in">NSURLCache</span> alloc] initWithMemoryCapacity:<span class="number">0</span> diskCapacity:<span class="number">0</span> diskPath:<span class="literal">nil</span>];</span><br><span class="line">[<span class="built_in">NSURLCache</span> setSharedURLCache:cache];</span><br></pre></td></tr></table></figure>
+
+<p>第二种是在请求头中设置 “Cache-Control” 为 “no-cache”</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[request setValue:<span class="string">@"no-cache"</span> forHTTPHeaderField:<span class="string">@"Cache-Control"</span>];</span><br></pre></td></tr></table></figure>
+
+<p>这两种方法无论在 NSURLRequestCachePolicy 哪种策略下，都不会去缓存。</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><p><a href="https://techblog.toutiao.com/2017/10/11/untitled-12/" target="_blank" rel="noopener">1.基于NSURLCache的缓存实现 - 崔江涛</a></p>
+<p><a href="https://developer.apple.com/documentation/foundation/url_loading_system/accessing_cached_data" target="_blank" rel="noopener">2.Accessing Cached Data - Apple</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpeg" alt="Jaymin">
+            
+              <p class="site-author-name" itemprop="name">Jaymin</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Overview"><span class="nav-number">1.</span> <span class="nav-text">Overview</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#缓存策略-NSURLRequestCachePolicy"><span class="nav-number">2.</span> <span class="nav-text">缓存策略 NSURLRequestCachePolicy</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用-NSURLSessionDataDelegate-来更改缓存策略"><span class="nav-number">3.</span> <span class="nav-text">使用 NSURLSessionDataDelegate 来更改缓存策略</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NSURLCache能缓存POST请求吗？"><span class="nav-number">4.</span> <span class="nav-text">NSURLCache能缓存POST请求吗？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#获取NSURLCache的POST请求缓存"><span class="nav-number">5.</span> <span class="nav-text">获取NSURLCache的POST请求缓存</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何关闭-NSURLCache-缓存"><span class="nav-number">6.</span> <span class="nav-text">如何关闭 NSURLCache 缓存</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">7.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jaymin</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
