@@ -29,7 +29,7 @@
     
     
   <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
-  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-flash.min.css?v=1.0.2">
 
 
 
@@ -44,6 +44,10 @@
 
 
 
+
+  
+  
+  <link rel="stylesheet" href="/lib/fancybox/source/jquery.fancybox.css">
 
 
 
@@ -82,7 +86,7 @@
     sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
     back2top: true,
     back2top_sidebar: false,
-    fancybox: false,
+    fancybox: true,
     fastclick: false,
     lazyload: false,
     tabs: true,
@@ -109,7 +113,7 @@
 <meta property="og:url" content="http://yoursite.com/about/index.html">
 <meta property="og:site_name" content="Jaymin&#39;s blog">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-06-21T18:56:54.092Z">
+<meta property="og:updated_time" content="2019-06-22T13:01:36.664Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="关于我">
 
@@ -136,6 +140,16 @@
 
 
 
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?db32b5de2142a040c7ab560dbaf6720e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
 
 
 
@@ -378,14 +392,6 @@
           </div>
           
 
-  
-    <div class="comments" id="gitalk-container">
-    </div>
-
-  
-
-
-
         </div>
         
           
@@ -516,7 +522,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+        <div class="copyright">&copy; 2016 – <span itemprop="copyrightYear">2019</span>
   <span class="with-love" id="animate">
     <i class="fa fa-heart"></i>
   </span>
@@ -542,6 +548,16 @@
 
 
         
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+
+  
+
+  
+</div>
+
 
 
 
@@ -589,6 +605,8 @@
 
 
 
+  
+
 
 
 
@@ -611,6 +629,9 @@
 
   
   <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/fancybox/source/jquery.fancybox.pack.js"></script>
 
 
   
@@ -653,37 +674,6 @@
 
   
 
-
-  
-    
-
-<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
-
-
-
-<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
-
-
-
-<script src="//cdn.jsdelivr.net/npm/js-md5@0.7.3/src/md5.min.js"></script>
-
-<script>
-  var gitalk = new Gitalk({
-    clientID: '6d97c011341be40a3ddd',
-    clientSecret: '774205f438edb7b9888266165d5b0b66fca26d12',
-    repo: 'blog_comments',
-    owner: 'jiangcanming',
-    admin: ['jiangcanming'],
-    id: md5(location.pathname),
-    
-      language: window.navigator.language || window.navigator.userLanguage,
-    
-    distractionFreeMode: 'true'
-  });
-  gitalk.render('gitalk-container');
-</script>
-
-  
 
 
   
